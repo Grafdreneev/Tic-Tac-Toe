@@ -1,0 +1,146 @@
+def field(x, y):
+    """Функция создания поле для игры"""
+    pole = [["-" for i in range(x)] for j in range(y)]
+    return pole
+
+
+def entering_coordinates_1():
+    """Функция проверки введённых координат для первого игрока на:
+    1) Что введённые данные являются числом
+    2) Что введённые координаты не превышают значений поля
+    3) Что введённые координаты устанавливаются на пустую клетку"""
+    try:
+        hod_1_stroka = int(input("Введите строку куда ставить крест: "))
+        hod_1_stolb = int(input("Введите столбец куда ставить круст: "))
+    except ValueError:
+        print("Координаты введены неверно, повторите ввод")
+        return entering_coordinates_1()
+    else:
+        if hod_1_stroka >= 3 or hod_1_stolb >= 3:
+            print("Координаты неверные, повторите ввод")
+            return entering_coordinates_1()
+        elif the_gaming_field[hod_1_stroka][hod_1_stolb] != "-":
+            print("Место уже занято, выберете другую точку.")
+            return entering_coordinates_1()
+        return hod_1_stroka, hod_1_stolb
+
+
+def entering_coordinates_2():
+    """Функция проверки введённых координат для второго игрока на:
+    1) Что введённые данные являются числом
+    2) Что введённые координаты не превышают значений поля
+    3) Что введённые координаты устанавливаются на пустую клетку"""
+    try:
+        hod_2_stroka = int(input("Введите строку куда ставить круг: "))
+        hod_2_stolb = int(input("Введите столбец куда ставить круг: "))
+    except ValueError:
+        print("Координаты введены неверно, повторите ввод")
+        return entering_coordinates_2()
+    else:
+        if hod_2_stroka >= 3 or hod_2_stolb >= 3:
+            print("Координаты неверные, повторите ввод")
+            return entering_coordinates_2()
+        elif the_gaming_field[hod_2_stroka][hod_2_stolb] != "-":
+            print("Место уже занято, выберете другую точку.")
+            return entering_coordinates_2()
+        return hod_2_stroka, hod_2_stolb
+
+
+def check_completeness(lst):
+    """Функция проверки победы. Все возможные варианты для "х" и "о" """
+    for i in range(3):
+        if (lst[i][0] == lst[i][1] == lst[i][2] == "x"
+                or lst[0][i] == lst[1][i] == lst[2][i] == "x"
+                or lst[0][0] == lst[1][1] == lst[2][2] == "x"
+                or lst[2][0] == lst[1][1] == lst[0][2] == "x"):
+            return 1
+        elif (lst[i][0] == lst[i][1] == lst[i][2] == "o"
+              or lst[0][i] == lst[1][i] == lst[2][i] == "o"
+              or lst[0][0] == lst[1][1] == lst[2][2] == "o"
+              or lst[2][0] == lst[1][1] == lst[0][2] == "o"):
+            return 2
+        elif "-" not in lst[0] and "-" not in lst[1] and "-" not in lst[2]:
+            return 3
+
+
+def show_the_field(field_1):
+    """Функция печати текущего состояния поля"""
+    b = 1
+    n = 0
+    for i in field_1:
+        if b == 1:
+            print(*[" ", 0, 1, 2])
+            b += 1
+        print(n, *i)
+        n += 1
+
+
+print("Старт игры")
+game = 0
+while game == 0:
+    print("Команды:\n"
+          "1 - Создать игровое поле 3x3 \n"
+          "2 - Написать ники игроков\n"
+          "3 - Приступить к игре")
+    main = int(input("Введите номер команды которой хотите воспользоваться: "))
+    if main == 1:
+        show_the_field(field(3, 3))
+        the_gaming_field = field(3, 3)
+        print("Поле создано\n")
+    elif main == 2:
+        name_1 = input("Введите имя первого игрока: ")
+        name_2 = input("Введите имя второго игрока: ")
+        print(f"Имя первого игрока - {name_1}\n"
+              f"Имя второго игрока - {name_2}\n")
+    elif main == 3:
+        win = 0
+        show_the_field(the_gaming_field)
+        while win == 0:
+
+            print("\n"
+                  "Ход первого игрока: ")
+            koordinata = entering_coordinates_1()
+            the_gaming_field[koordinata[0]][koordinata[1]] = "x"
+            show_the_field(the_gaming_field)
+            game_over = check_completeness(the_gaming_field)
+            if game_over == 1:
+                print(f"Победа игрока под ником {name_1}! \n"
+                      "Конец игры! ")
+                win = 1
+                game = 1
+                break
+            elif game_over == 2:
+                print(f"Победа игрока под ником {name_2}! \n"
+                      "Конец игры! ")
+                win = 2
+                game = 2
+                break
+            elif game_over == 3:
+                print(f"Ничья! \n"
+                      "Конец игры! ")
+                win = 3
+                game = 3
+                break
+            print("Ход второго игрока: ")
+            koordinata_2 = entering_coordinates_2()
+            the_gaming_field[koordinata_2[0]][koordinata_2[1]] = "o"
+            show_the_field(the_gaming_field)
+            game_over = check_completeness(the_gaming_field)
+            if game_over == 1:
+                print(f"Победа игрока под ником {name_1}! \n"
+                      "Конец игры! ")
+                win = 1
+                game = 1
+                break
+            elif game_over == 2:
+                print(f"Победа игрока под ником {name_2}! \n"
+                      "Конец игры! ")
+                win = 2
+                game = 2
+                break
+            elif game_over == 3:
+                print(f"Ничья! \n"
+                      "Конец игры! ")
+                win = 3
+                game = 3
+                break
